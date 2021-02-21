@@ -1,17 +1,42 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import RepositoryItemHeader from './RepositoryItemHeader';
+import RepositoryItemIcon from './RepositoryItemIcon';
+import RepositoryItemDetails from './RepositoryItemDetails';
+
+const styles = StyleSheet.create({
+  flexContainer: {
+    alignItems: 'stretch',
+    padding: 15,
+    backgroundColor: 'white'
+  },
+  headerContainer: {
+    flexDirection: 'row',
+  }
+});
 
 const RepositoryItem = ({ item }) => {
   return (
-    <View>
-      <Text>Full name: {item.fullName}</Text>
-      <Text>Description: {item.description}</Text>
-      <Text>Language: {item.language}</Text>
-      <Text>Stars: {item.stargazersCount}</Text>
-      <Text>Forks: {item.forksCount}</Text>
+    <View style={styles.flexContainer}>
+      <View style={styles.headerContainer}>
+        <RepositoryItemIcon avatarUrl={item.ownerAvatarUrl} />
+        <RepositoryItemHeader
+          fullName={item.fullName}
+          description={item.description}
+          language={item.language}
+        />
+      </View>
+      <RepositoryItemDetails
+        stars={item.stargazersCount}
+        forks={item.forksCount}
+        reviews={item.reviewCount}
+        rating={item.ratingAverage}
+      />
+      {/* <Text>Stars: {item.stargazersCount}</Text> */}
+      {/* <Text>Forks: {item.forksCount}</Text>
       <Text>Reviews: {item.reviewCount}</Text>
-      <Text>Rating: {item.ratingAverage}</Text>
-    </View>
+      <Text>Rating: {item.ratingAverage}</Text> */}
+    </View >
   );
 };
 
