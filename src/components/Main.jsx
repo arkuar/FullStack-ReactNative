@@ -1,8 +1,10 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { Switch, Route, Redirect } from 'react-router-native';
 import theme from '../theme';
 import AppBar from './AppBar';
 import RepositoryList from './RepositoryList';
+import SignIn from './SignIn';
 
 const styles = StyleSheet.create({
   container: {
@@ -16,7 +18,15 @@ const Main = () => {
   return (
     <View style={styles.container}>
       <AppBar />
-      <RepositoryList />
+      <Switch>
+        <Route path="/signin">
+          <SignIn />
+        </Route>
+        <Route path="/" exact>
+          <RepositoryList />
+        </Route>
+        <Redirect to="/" />
+      </Switch>
     </View>
   );
 };

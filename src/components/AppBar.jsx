@@ -1,30 +1,35 @@
 import React from 'react';
-import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
 import Text from './Text';
+import { Link } from 'react-router-native';
 
 const styles = StyleSheet.create({
   container: {
     paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#24292e'
+    backgroundColor: '#24292e',
   },
   tab: {
     color: 'white',
-    paddingBottom: 10
+    paddingBottom: 10,
+    marginLeft: 20
   }
 });
 
 const AppBar = () => {
 
-  const onPress = () => {
-    console.log('press');
-  };
-
-  return <View style={styles.container}>
-    <TouchableWithoutFeedback onPress={onPress}>
-      <Text style={styles.tab} fontSize="subheading" fontWeight="bold">Repositories</Text>
-    </TouchableWithoutFeedback>
-  </View>;
+  return (
+    <View style={styles.container}>
+      <ScrollView horizontal>
+        <Link to="/" component={TouchableWithoutFeedback}>
+          <Text style={styles.tab} fontSize="subheading" fontWeight="bold">Repositories</Text>
+        </Link>
+        <Link to="/signin" component={TouchableWithoutFeedback}>
+          <Text style={styles.tab} fontSize="subheading" fontWeight="bold">Sign In</Text>
+        </Link>
+      </ScrollView>
+    </View>
+  );
 };
 
 export default AppBar;
