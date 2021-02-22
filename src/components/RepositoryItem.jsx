@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import RepositoryItemHeader from './RepositoryItemHeader';
 import RepositoryItemIcon from './RepositoryItemIcon';
 import RepositoryItemDetails from './RepositoryItemDetails';

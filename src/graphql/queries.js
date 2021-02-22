@@ -22,3 +22,13 @@ export const AUTHORIZE = gql`
     }
   }
 `;
+
+export const GET_REPOSITORY = gql`
+  query repository($id: ID!) {
+    repository(id: $id) {
+      ...RepositoryDetails
+      url
+    }
+  }
+  ${REPOSITORY_DETAILS}
+`;
