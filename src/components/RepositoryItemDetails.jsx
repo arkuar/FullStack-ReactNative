@@ -2,6 +2,8 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import RepositoryItemDetail from './RepositoryItemDetail';
 
+import { roundCount } from '../utils/utils';
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
@@ -10,20 +12,12 @@ const styles = StyleSheet.create({
 });
 
 const RepositoryItemDetails = ({ stars, forks, reviews, rating }) => {
-
-  const roundCount = (count) => {
-    if (count >= 1000) {
-      return `${Number.parseFloat(count / 1000).toFixed(1)}k`;
-    }
-    return count;
-  };
-
   return (
     <View style={styles.container}>
-      <RepositoryItemDetail name='Stars' count={roundCount(stars)} />
-      <RepositoryItemDetail name='Forks' count={roundCount(forks)} />
-      <RepositoryItemDetail name='Reviews' count={roundCount(reviews)} />
-      <RepositoryItemDetail name='Rating' count={roundCount(rating)} />
+      <RepositoryItemDetail testID="repoStars" name='Stars' count={roundCount(stars)} />
+      <RepositoryItemDetail testID="repoForks" name='Forks' count={roundCount(forks)} />
+      <RepositoryItemDetail testID="repoReviews" name='Reviews' count={roundCount(reviews)} />
+      <RepositoryItemDetail testID="repoRating" name='Rating' count={roundCount(rating)} />
     </View>
   );
 };

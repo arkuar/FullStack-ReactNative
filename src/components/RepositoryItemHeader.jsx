@@ -22,9 +22,9 @@ const styles = StyleSheet.create({
 const RepositoryItemHeader = ({ fullName, description, language }) => {
   return (
     <View style={styles.infoContainer}>
-      <Text fontSize='subheading' fontWeight='bold'>{fullName}</Text>
-      <Text color='textSecondary'>{description}</Text>
-      <Text style={styles.languageContainer}>{language}</Text>
+      <Text testID="repoFullName" fontSize='subheading' fontWeight='bold'>{fullName}</Text>
+      <Text testID="repoDescription" color='textSecondary'>{description}</Text>
+      <Text testID="repoLanguage" style={styles.languageContainer}>{language}</Text>
     </View>
   );
 };

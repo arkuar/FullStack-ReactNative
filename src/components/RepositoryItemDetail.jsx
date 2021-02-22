@@ -12,11 +12,11 @@ const styles = StyleSheet.create({
   }
 });
 
-const RepositoryItemDetail = ({ name, count }) => {
+const RepositoryItemDetail = ({ testID, name, count }) => {
   return (
     <View style={styles.container}>
       <View style={styles.detailContainer}>
-        <Text fontSize='subheading' fontWeight='bold'>{count}</Text>
+        <Text testID={testID} fontSize='subheading' fontWeight='bold'>{count}</Text>
         <Text color='textSecondary'>{name}</Text>
       </View>
     </View>
