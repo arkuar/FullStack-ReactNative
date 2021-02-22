@@ -6,7 +6,8 @@ import Text from './Text';
 const styles = StyleSheet.create({
   infoContainer: {
     flexGrow: 1,
-    marginBottom: 15
+    marginBottom: 15,
+    flexShrink: 1
   },
   languageContainer: {
     backgroundColor: theme.colors.primary,

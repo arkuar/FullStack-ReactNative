@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
 import Text from './Text';
 import { Link } from 'react-router-native';
+import AuthStorageContext from '../contexts/AuthStorageContext';
+import { useApolloClient, useQuery } from '@apollo/react-hooks';
+import { AUTHORIZE } from '../graphql/queries';
 
 const styles = StyleSheet.create({
   container: {
@@ -17,6 +20,23 @@ const styles = StyleSheet.create({
 });
 
 const AppBar = () => {
+  const { data } = useQuery(AUTHORIZE);
+  const [authorized, setAuthorized] = useState(false);
+  const authStorage = useContext(AuthStorageContext);
+  const apolloClient = useApolloClient();
+
+  useEffect(() => {
+    if (data && data.authorizedUser) {
+      setAuthorized(true);
+    } else {
+      setAuthorized(false);
+    }
+  }, [data]);
+
+  const signOut = async () => {
+    await authStorage.removeAccessToken();
+    apolloClient.resetStore();
+  };
 
   return (
     <View style={styles.container}>
@@ -24,9 +44,16 @@ const AppBar = () => {
         <Link to="/" component={TouchableWithoutFeedback}>
           <Text style={styles.tab} fontSize="subheading" fontWeight="bold">Repositories</Text>
         </Link>
-        <Link to="/signin" component={TouchableWithoutFeedback}>
-          <Text style={styles.tab} fontSize="subheading" fontWeight="bold">Sign In</Text>
-        </Link>
+        {!authorized ?
+          <Link to="/signin" component={TouchableWithoutFeedback}>
+            <Text style={styles.tab} fontSize="subheading" fontWeight="bold">Sign In</Text>
+          </Link> :
+          <View>
+            <TouchableWithoutFeedback onPress={signOut}>
+              <Text style={styles.tab} fontSize="subheading" fontWeight="bold">Sign out</Text>
+            </TouchableWithoutFeedback>
+          </View>
+        }
       </ScrollView>
     </View>
   );

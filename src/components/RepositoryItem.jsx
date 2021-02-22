@@ -32,10 +32,6 @@ const RepositoryItem = ({ item }) => {
         reviews={item.reviewCount}
         rating={item.ratingAverage}
       />
-      {/* <Text>Stars: {item.stargazersCount}</Text> */}
-      {/* <Text>Forks: {item.forksCount}</Text>
-      <Text>Reviews: {item.reviewCount}</Text>
-      <Text>Rating: {item.ratingAverage}</Text> */}
     </View >
   );
 };
