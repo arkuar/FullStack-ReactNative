@@ -2,8 +2,8 @@ import { gql } from 'apollo-boost';
 import { REPOSITORY_DETAILS } from './fragments';
 
 export const GET_REPOSITORIES = gql`
-  query {
-    repositories {
+  query AllRepositories($orderBy: AllRepositoriesOrderBy, $orderDirection: OrderDirection) {
+    repositories(orderBy: $orderBy, orderDirection: $orderDirection) {
       edges {
         node {
           ...RepositoryDetails
