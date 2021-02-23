@@ -61,6 +61,11 @@ const AppBar = () => {
             </TouchableWithoutFeedback>
           </View>
         }
+        {!authorized &&
+          <Link to="/signup" component={TouchableWithoutFeedback}>
+            <Text style={styles.tab} fontSize="subheading" fontWeight="bold">Sign up</Text>
+          </Link>
+        }
       </ScrollView>
     </View>
   );

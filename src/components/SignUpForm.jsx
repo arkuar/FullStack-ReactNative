@@ -4,45 +4,47 @@ import React from 'react';
 import { StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { useHistory } from 'react-router-native';
 import * as yup from 'yup';
-import { CREATE_REVIEW } from '../graphql/mutations';
+import { CREATE_USER } from '../graphql/mutations';
+import useSignIn from '../hooks/useSignIn';
 import theme from '../theme';
 import FormikTextInput from './FormikTextInput';
 import Text from './Text';
 
+
 const initialValues = {
-  owner: "",
-  name: "",
-  rating: undefined,
-  review: ""
+  username: "",
+  password: "",
+  passwordConfirm: ""
 };
 
 const validationSchema = yup.object().shape({
-  owner: yup
+  username: yup
     .string()
-    .required("Repository owner name is required"),
-  name: yup
+    .min(1)
+    .max(30)
+    .required("Username is required"),
+  password: yup
     .string()
-    .required("Repository name is required"),
-  rating: yup
-    .number()
-    .min(0)
-    .max(100)
-    .integer("Rating must be an integer")
-    .required("Rating is required"),
-  review: yup
+    .min(5)
+    .max(50)
+    .required("Password is required"),
+  passwordConfirm: yup
     .string()
-    .optional()
+    .oneOf([yup.ref("password")], "Password does not match")
+    .required("Password confirmation is required")
 });
 
-const ReviewForm = () => {
+const SignUpForm = () => {
+  const [submit] = useMutation(CREATE_USER);
+  const [signIn] = useSignIn();
   let history = useHistory();
-  const [submit] = useMutation(CREATE_REVIEW);
 
   const onSubmit = async (values) => {
-    const { name, owner, rating, review } = values;
+    const { username, password } = values;
     try {
-      const { data } = await submit({ variables: { name, owner, rating: +rating, review } });
-      history.push(`/repositories/${data.createReview.repositoryId}`);
+      await submit({ variables: { username, password } });
+      await signIn({ username, password });
+      history.push("/");
     } catch (error) {
       console.log(error);
     }
@@ -52,12 +54,11 @@ const ReviewForm = () => {
     <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
       {({ handleSubmit }) =>
         <View style={styles.container}>
-          <FormikTextInput name="owner" placeholder="Repository owner name" />
-          <FormikTextInput name="name" placeholder="Repository name" />
-          <FormikTextInput keyboardType="numeric" name="rating" placeholder="Rating between 0 and 100" />
-          <FormikTextInput name="review" placeholder="Review" multiline />
+          <FormikTextInput name="username" placeholder="Username" />
+          <FormikTextInput name="password" placeholder="Password" secureTextEntry />
+          <FormikTextInput name="passwordConfirm" placeholder="Password confirmation" secureTextEntry />
           <TouchableWithoutFeedback onPress={handleSubmit}>
-            <Text style={styles.submitButton} fontWeight="bold" fontSize="subheading" >Create a review</Text>
+            <Text style={styles.submitButton} fontWeight="bold" fontSize="subheading" >Sign up</Text>
           </TouchableWithoutFeedback>
         </View>
       }
@@ -80,4 +81,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ReviewForm;
+export default SignUpForm;
