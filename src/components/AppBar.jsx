@@ -51,6 +51,11 @@ const AppBar = () => {
             <Text style={styles.tab} fontSize="subheading" fontWeight="bold">Create a review</Text>
           </Link>
         }
+        {authorized && 
+          <Link to="/myreviews" component={TouchableWithoutFeedback}>
+            <Text style={styles.tab} fontSize="subheading" fontWeight="bold">My reviews</Text>
+          </Link>
+        }
         {!authorized ?
           <Link to="/signin" component={TouchableWithoutFeedback}>
             <Text style={styles.tab} fontSize="subheading" fontWeight="bold">Sign In</Text>

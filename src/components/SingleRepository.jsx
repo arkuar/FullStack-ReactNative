@@ -1,17 +1,19 @@
-import { useQuery } from '@apollo/react-hooks';
-import { format } from 'date-fns';
 import React from 'react';
-import { ActivityIndicator, FlatList, Linking, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { FlatList, Linking, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { useParams } from 'react-router-native';
-import { GET_REPOSITORY } from '../graphql/queries';
+import useRepository from '../hooks/useRepository';
 import theme from '../theme';
+import ItemSeparator from './ItemSeparator';
 import RepositoryItem from './RepositoryItem';
+import ReviewItem from './ReviewItem';
 import Text from './Text';
 
 const RepositoryInfo = ({ repository }) => {
   const handlePress = () => {
     Linking.openURL(repository.url);
   };
+
+  if (!repository) return <Text>loading...</Text>;
 
   return (
     <View style={styles.container}>
@@ -23,47 +25,27 @@ const RepositoryInfo = ({ repository }) => {
   );
 };
 
-const ReviewItem = ({ review }) => {
-  return (
-    <View style={styles.reviewContainer}>
-      <View style={styles.reviewScore}>
-        <Text color="primary" fontWeight="bold">{review.rating}</Text>
-      </View>
-      <View style={styles.reviewContent}>
-        <Text fontWeight="bold">{review.user.username}</Text>
-        <Text color="textSecondary">{format(new Date(review.createdAt), "dd.MM.yyyy")}</Text>
-        <Text>{review.text}</Text>
-      </View>
-    </View>
-  );
-};
-
-const ItemSeparator = () => <View style={styles.separator} />;
 
 const SingleRepository = () => {
   const { id } = useParams();
-  const { loading, data } = useQuery(GET_REPOSITORY, {
-    variables: { id },
-    fetchPolicy: 'cache-and-network'
+  const { repository, fetchMore } = useRepository({
+    id,
+    first: 5
   });
 
-  if (loading) {
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  const repository = data.repository;
-
-  const reviews = repository.reviews
+  const reviews = repository && repository.reviews
     ? repository.reviews.edges.map(e => e.node)
     : [];
+
+  const onEndReach = () => {
+    fetchMore();
+  };
 
   return (
     <FlatList
       data={reviews}
+      onEndReached={onEndReach}
+      onEndReachedThreshold={0.5}
       renderItem={({ item }) => <ReviewItem review={item} />}
       keyExtractor={({ id }) => id}
       ListHeaderComponent={() => <RepositoryInfo repository={repository} />}
@@ -86,36 +68,6 @@ const styles = StyleSheet.create({
     color: 'white',
     margin: 15
   },
-  separator: {
-    height: 10,
-  },
-  reviewContainer: {
-    backgroundColor: 'white',
-    alignItems: 'stretch',
-    flexDirection: 'row',
-    padding: 10
-  },
-  reviewScore: {
-    width: 50,
-    height: 50,
-    borderRadius: 50 / 2,
-    borderColor: theme.colors.primary,
-    borderStyle: 'solid',
-    borderWidth: 2,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  reviewContent: {
-    flexGrow: 1,
-    flexShrink: 1,
-    marginLeft: 10
-  },
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-  }
 });
 
 export default SingleRepository;

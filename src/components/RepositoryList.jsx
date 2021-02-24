@@ -6,11 +6,9 @@ import RepositoryItem from './RepositoryItem';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useDebouncedCallback } from 'use-debounce/lib';
 import { FontAwesome } from '@expo/vector-icons';
+import ItemSeparator from './ItemSeparator';
 
 const styles = StyleSheet.create({
-  separator: {
-    height: 10,
-  },
   searchContainer: {
     backgroundColor: 'white',
     borderWidth: 1,
@@ -31,22 +29,20 @@ const styles = StyleSheet.create({
 const Dropdown = ({ onSortChange }) => {
 
   return (
-    <View>
-      <DropDownPicker
-        style={{ padding: 20, height: 50 }}
-        onChangeItem={onSortChange}
-        defaultValue={'latest'}
-        containerStyle={{ height: 50 }}
-        itemStyle={{
-          justifyContent: 'flex-start'
-        }}
-        items={[
-          { label: 'Latest repositories', value: 'latest' },
-          { label: 'Highest rated repositories', value: 'highest' },
-          { label: 'Lowest rated repositories', value: 'lowest' },
-        ]}
-      />
-    </View>
+    <DropDownPicker
+      style={{ padding: 20, height: 50 }}
+      onChangeItem={onSortChange}
+      defaultValue={'latest'}
+      containerStyle={{ height: 50 }}
+      itemStyle={{
+        justifyContent: 'flex-start'
+      }}
+      items={[
+        { label: 'Latest repositories', value: 'latest' },
+        { label: 'Highest rated repositories', value: 'highest' },
+        { label: 'Lowest rated repositories', value: 'lowest' },
+      ]}
+    />
   );
 };
 
@@ -61,7 +57,12 @@ const sortParams = (active) => {
   }
 };
 
-export const RepositoryListContainer = ({ repositories, onSortChange, onSearchChange }) => {
+export const RepositoryListContainer = ({
+  repositories,
+  onSortChange,
+  onSearchChange,
+  onEndReach
+}) => {
   const history = useHistory();
   const [searchValue, setSearchValue] = useState('');
 
@@ -82,6 +83,9 @@ export const RepositoryListContainer = ({ repositories, onSortChange, onSearchCh
     <View>
       <Dropdown onSortChange={onSortChange} />
       <FlatList
+        onEndReached={onEndReach}
+        onEndReachedThreshold={0.5}
+        contentContainerStyle={{ paddingBottom: 140 }}
         ListHeaderComponent={
           <View style={styles.searchContainer}>
             <FontAwesome name="search" size={24} color="grey" />
@@ -106,16 +110,15 @@ export const RepositoryListContainer = ({ repositories, onSortChange, onSearchCh
   );
 };
 
-const ItemSeparator = () => <View style={styles.separator} />;
-
 const RepositoryList = () => {
   const [sort, setSort] = useState();
   const [searchKeyword, setSearchKeyword] = useState('');
   const { orderBy, orderDirection } = sortParams(sort);
-  const { repositories } = useRepositories({
+  const { repositories, fetchMore } = useRepositories({
     orderBy,
     orderDirection,
-    searchKeyword: searchKeyword
+    searchKeyword: searchKeyword,
+    first: 8
   });
 
   const debounced = useDebouncedCallback(
@@ -131,8 +134,17 @@ const RepositoryList = () => {
     debounced.callback(value);
   };
 
+  const onEndReach = () => {
+    fetchMore();
+  };
+
   return (
-    <RepositoryListContainer repositories={repositories} onSearchChange={onSearchChange} onSortChange={onSortChange} />
+    <RepositoryListContainer
+      repositories={repositories}
+      onSearchChange={onSearchChange}
+      onSortChange={onSortChange}
+      onEndReach={onEndReach}
+    />
   );
 };
 
